@@ -26,6 +26,10 @@
         * Модели произношения(Pronunciation models) - соединяет части в слова и сопостовляет каждому слову его фонетическое представление
         * Языковые модели(Language models) - соединяет слова вместе и выбирает наиболее вероятную последовательность слов среди множества таких же последовательностей.
       2) Все модели в основном используют комбинацию из этих всех подходов.
+### 06/05/19 - начал участвовать в [Freesound-audio-tagging-2019](https://www.kaggle.com/c/freesound-audio-tagging-2019/overview/submission-modes).
+  #### Прогресс:
+    1) Изучаю кернелы, очень интересный [кернел](https://www.kaggle.com/maxwell110/beginner-s-guide-to-audio-data-2). В нем реализованы 1D-conv и 2D-conv сети с MFCC-коэффициентами.
+    
 ### TODO: 
       1) Прочитать про Скрытые Марковские Модели
       2) Поучаствовать в соревновании - https://www.kaggle.com/c/freesound-audio-tagging-2019/overview/submission-modes
