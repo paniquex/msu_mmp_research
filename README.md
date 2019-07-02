@@ -41,7 +41,15 @@
       *0.633
       *0.635 - место 110/563  - попробовал сохранять эпохи с лучшим скором, затем усреднять их предсказания.
       (!!возможно, лучше будет усреднять веса, и предсказывать с помощью одной нейросети!!) и изменил lr с 1e-3 до 0.1
-    
+# 01/07/19 - прочитал статьи:
+  https://towardsdatascience.com/whats-wrong-with-spectrograms-and-cnns-for-audio-processing-311377d7ccd
+https://towardsdatascience.com/the-promise-of-ai-in-audio-processing-a7e4996eb2ca
+https://towardsdatascience.com/human-like-machine-hearing-with-ai-1-3-a5713af6e2f8
+https://towardsdatascience.com/human-like-machine-hearing-with-ai-2-3-f9fab903b20a
+https://m.habr.com/ru/post/144580/
+https://m.habr.com/ru/post/144491/
+
 ### TODO: 
       1) Прочитать про Скрытые Марковские Модели
       2) Поучаствовать в соревновании - https://www.kaggle.com/c/freesound-audio-tagging-2019/overview/submission-modes
+      3) сделать краткий обзор статей за 01/07/19
