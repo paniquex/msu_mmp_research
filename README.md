@@ -16,6 +16,7 @@ https://m.habr.com/ru/post/144491/
 ### 02/07/19 - прочитал статью: 
 VoiceFilter: Targeted Voice Separation by Speaker-Conditioned Spectrogram Masking - https://arxiv.org/abs/1810.04826
 
+## 24/07/19 - добавил два обзора статей в табличку( Targeted voice separation + Multi head attention)
 ### TODO: 
       1) Прочитать про Скрытые Марковские Модели
       2) Поучаствовать в соревновании - https://www.kaggle.com/c/freesound-audio-tagging-2019/overview/submission-modes
