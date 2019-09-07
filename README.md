@@ -1,6 +1,9 @@
 # Scientific researches
 Здесь я буду писать о моих продвижениях в теме "Speech recognition".
-Ссылка на [гугл-таблицу](https://docs.google.com/spreadsheets/d/1rFv8BecwJ_TwTR5gNuPmNbKJjQrw-FQ7MnWDofIi3zQ/edit?usp=sharing) с описанием статей
+Ссылка на [гугл-таблицу](https://docs.google.com/spreadsheets/d/1rFv8BecwJ_TwTR5gNuPmNbKJjQrw-FQ7MnWDofIi3zQ/edit?usp=sharing) с описанием статей.
+Она состоит из двух страниц:
+1) Выписывал все, что понравилось с таймлайном и кратким обзором
+2) Статьи немного серьезнее(из arxiv)
 
 ### 19/04/19 - прочитал [статью 1](https://habr.com/ru/post/226143/) на хабре
 ### 21/04/19 - прочитал [статью 2](https://towardsdatascience.com/ok-google-how-to-do-speech-recognition-f77b5d7cbe0b) на towardsdatascience
