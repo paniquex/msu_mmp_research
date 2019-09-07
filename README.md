@@ -1,4 +1,4 @@
-# speech_recognition_researches
+# Scientific researches
 Здесь я буду писать о моих продвижениях в теме "Speech recognition".
 Ссылка на [гугл-таблицу](https://docs.google.com/spreadsheets/d/1rFv8BecwJ_TwTR5gNuPmNbKJjQrw-FQ7MnWDofIi3zQ/edit?usp=sharing) с описанием статей
 
