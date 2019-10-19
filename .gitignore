@@ -4,3 +4,23 @@ DCASE_research/challenge2019/task2(Audio_tagging)/data/origin_data/test/
 DCASE_research/challenge2019/task2(Audio_tagging)/data/origin_data/train_curated/
 
 DCASE_research/challenge2019/task2(Audio_tagging)/data/origin_data/train_noisy/
+
+DCASE_research/challenge2019/task2(Audio_tagging)/__pycache__/config.cpython-37.pyc
+
+DCASE_research/challenge2019/task2(Audio_tagging)/__pycache__/dataset.cpython-37.pyc
+
+DCASE_research/challenge2019/task2(Audio_tagging)/__pycache__/metrics.cpython-37.pyc
+
+DCASE_research/challenge2019/task2(Audio_tagging)/__pycache__/model.cpython-37.pyc
+
+DCASE_research/challenge2019/task2(Audio_tagging)/__pycache__/preprocessing.cpython-37.pyc
+
+DCASE_research/challenge2019/task2(Audio_tagging)/data/preprocessed_data/mels_test.pkl
+
+DCASE_research/challenge2019/task2(Audio_tagging)/data/preprocessed_data/mels_train_curated.pkl
+
+DCASE_research/challenge2019/task2(Audio_tagging)/data/preprocessed_data/mels_train_noisy.pkl
+
+DCASE_research/challenge2019/task2(Audio_tagging)/data/preprocessed_data/mels_trn_noisy_best50s.pkl
+
+*.pt
