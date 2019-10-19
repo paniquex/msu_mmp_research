@@ -12,26 +12,33 @@ from sklearn.model_selection import train_test_split
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision.transforms import transforms
+import torchvision
+# Logging
+from torch.utils.tensorboard import SummaryWriter
+import matplotlib.pyplot as plt
 
 import pickle
 import time
 from tqdm import tqdm
 from fastprogress import master_bar, progress_bar
 
+
+
 #my modules
 import config
 import dataset
 import model
 import metrics
+import preprocessing
 
 
 def train_model(x_train, y_train, train_transforms, conf):
-    num_epochs = 2000
-    batch_size = 64
-    test_batch_size = 256
-    lr = 3e-3
-    eta_min = 1e-5
-    t_max = 10
+    num_epochs = conf.num_epochs
+    batch_size = conf.batch_size
+    test_batch_size = conf.test_batch_size
+    lr = conf.lr
+    eta_min = conf.eta_min
+    t_max = conf.t_max
 
     num_classes = y_train.shape[1]
 
@@ -61,8 +68,10 @@ def train_model(x_train, y_train, train_transforms, conf):
         start_time = time.time()
         net.train()
         avg_loss = 0.
-        i = 0
         for x_batch, y_batch in train_loader:
+            # grid = torchvision.utils.make_grid(x_batch)
+
+            # conf.tb.add_graph(net, x_batch[0][0][0])
             x_batch = x_batch.cuda()
             y_batch = y_batch.cuda()
             preds = net(x_batch)
@@ -73,8 +82,8 @@ def train_model(x_train, y_train, train_transforms, conf):
             optimizer.step()
 
             avg_loss += loss.item() / len(train_loader)
-            i += 1
             torch.cuda.empty_cache()
+        conf.tb.add_scalar('loss_train', avg_loss, epoch)
 
         net.eval()
         valid_preds = np.zeros((len(x_val), num_classes))
@@ -88,6 +97,7 @@ def train_model(x_train, y_train, train_transforms, conf):
                 valid_preds[i * test_batch_size: (i + 1) * test_batch_size] = preds.cpu().numpy()
 
                 avg_val_loss += loss.item() / len(valid_loader)
+            conf.tb.add_scalar('loss_val', avg_val_loss, epoch)
 
         score, weight = metrics.calculate_per_class_lwlrap(y_val, valid_preds)
         lwlrap = (score * weight).sum()
@@ -97,11 +107,15 @@ def train_model(x_train, y_train, train_transforms, conf):
             elapsed = time.time() - start_time
             print(
                 f'Epoch {epoch + 1} - avg_train_loss: {avg_loss:.4f}  avg_val_loss: {avg_val_loss:.4f}  val_lwlrap: {lwlrap:.6f}  time: {elapsed:.0f}s')
+
+        conf.tb.add_scalar('val_lwlrap', lwlrap, epoch)
+
         if lwlrap > best_lwlrap:
             best_epoch = epoch + 1
             best_lwlrap = lwlrap
             torch.save(net.state_dict(), 'weight_best.pt')
 
+    conf.tb.close()
     return {
         'best_epoch': best_epoch,
         'best_lwlrap': best_lwlrap,
@@ -174,9 +188,26 @@ def main():
     }
     print(len(x_train), len(x_test))
 
-    # result = train_model(x_train, y_train, transforms_dict['train'], conf=conf)
-    # print(result)
-
+    #logging
+    lr_list = [0.003]
+    batch_size_list = [64]
+    for batch_size in batch_size_list:
+        for lr in lr_list:
+            conf.lr = lr
+            conf.batch_size = batch_size
+            comment = f'_batch_size={batch_size}_lr={lr}'
+            conf.tb = SummaryWriter(comment=comment)
+            preprocessor = preprocessing.Audio_preprocessor(conf, True)
+            conf.tb.add_audio('audio_sample', preprocessor.read_audio('./data/origin_data/train_curated/7a162942.wav', True))
+            fig, ax = plt.subplots(figsize=(15, 5))
+            ax.set_yscale('linear')
+            ax.set_xscale('linear')
+            ax.imshow(preprocessor.read_as_melspectrogram('./data/origin_data/train_curated/7a162942.wav').reshape(128, 128), cmap="Spectral", interpolation='nearest')
+            print(type(fig))
+            ax.set_aspect('auto')
+            conf.tb.add_figure('spectrogram_sample', figure=fig)
+            result = train_model(x_train, y_train, transforms_dict['train'], conf=conf)
+            print(result)
     test_preds = predict_model(test_df['fname'], x_test, transforms_dict['test'], conf.num_classes, tta=20)
     test_df[labels] = test_preds.values
     test_df.to_csv('submission.csv', index=False)
