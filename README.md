@@ -24,3 +24,5 @@ VoiceFilter: Targeted Voice Separation by Speaker-Conditioned Spectrogram Maskin
       1) Прочитать про Скрытые Марковские Модели
       2) Поучаствовать в соревновании - https://www.kaggle.com/c/freesound-audio-tagging-2019/overview/submission-modes
       3) сделать краткий обзор статей за 01/07/19
+
+## 19/10/19 - Обновил [табличку](https://docs.google.com/spreadsheets/d/1rFv8BecwJ_TwTR5gNuPmNbKJjQrw-FQ7MnWDofIi3zQ/edit?usp=sharing) 
