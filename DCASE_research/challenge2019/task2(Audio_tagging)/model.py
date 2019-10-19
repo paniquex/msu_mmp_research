@@ -45,15 +45,18 @@ class SimpleModel(nn.Module):
         super().__init__()
 
         self.conv = nn.Sequential(
-            ConvBlock(in_channels=3, out_channels=64),
+            ConvBlock(in_channels=3, out_channels=16),
+            ConvBlock(in_channels=16, out_channels=32),
+            ConvBlock(in_channels=32, out_channels=64),
             ConvBlock(in_channels=64, out_channels=128),
             ConvBlock(in_channels=128, out_channels=256),
             ConvBlock(in_channels=256, out_channels=512),
+            ConvBlock(in_channels=512, out_channels=1024),
         )
 
         self.fc = nn.Sequential(
             nn.Dropout(0.2),
-            nn.Linear(512, 128),
+            nn.Linear(1024, 128),
             nn.PReLU(),
             nn.BatchNorm1d(128),
             nn.Dropout(0.1),
@@ -67,16 +70,9 @@ class SimpleModel(nn.Module):
         x = self.fc(x)
         return x
 
-    def forward(self, x):
-        x = self.conv(x)
-        x = torch.mean(x, dim=3)
-        x, _ = torch.max(x, dim=2)
-        x = self.fc(x)
-        return x
-
 
 class MainModel:
-    def __init__(self, model_type, num_classes=1):
+    def __init__(self, model_type, num_classes=80):
         self.model = None
         if model_type == 'Simple':
             self.model = SimpleModel(num_classes)
