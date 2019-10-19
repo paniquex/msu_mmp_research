@@ -47,6 +47,7 @@ class Audio_preprocessor:
         """
 
         self.conf = conf
+        self.conf.seed_torch()
         self.trim_long_data = trim_long_data
 
     def read_audio(self, pathname, trim_long_data):

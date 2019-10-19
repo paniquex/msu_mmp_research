@@ -49,10 +49,14 @@ def train_model(x_train, y_train, train_transforms, conf):
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
                               pin_memory=True,
-                              num_workers=conf.n_jobs + 10)
+                              num_workers=conf.n_jobs + 10,
+                              worker_init_fn=conf.workers_init_fn
+                              )
     valid_loader = DataLoader(valid_dataset, batch_size=test_batch_size, shuffle=False,
                               pin_memory=True,
-                              num_workers=conf.n_jobs + 10)
+                              num_workers=conf.n_jobs + 10,
+                              worker_init_fn=conf.workers_init_fn
+                              )
 
     net = model.MainModel(model_type='Simple', num_classes=num_classes)
     net = net.model.cuda()
@@ -123,10 +127,10 @@ def train_model(x_train, y_train, train_transforms, conf):
 
 
 def predict_model(test_fnames, x_test, test_transforms, num_classes, *, tta=5):
-    batch_size = 1
+    batch_size = 64
 
     test_dataset = dataset.TestDataset(test_fnames, x_test, test_transforms, tta=tta)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, pin_memory=True)
 
     net = model.MainModel(model_type='Simple', num_classes=num_classes)
     net = net.model.cuda()
@@ -143,7 +147,9 @@ def predict_model(test_fnames, x_test, test_transforms, num_classes, *, tta=5):
 
     test_preds = pd.DataFrame(data=np.concatenate(all_outputs),
                               index=all_fnames,
-                              columns=map(str, range(num_classes)))
+                              columns=map(str, range(num_classes)
+                                          )
+                              )
     test_preds = test_preds.groupby(level=0).mean()
 
     return test_preds
@@ -151,6 +157,7 @@ def predict_model(test_fnames, x_test, test_transforms, num_classes, *, tta=5):
 
 def main():
     conf = config.Config(80) # conf.num_classes = 80
+    conf.seed_torch()
     train_curated = pd.read_csv(conf.csv_file['train_curated'])
     train_noisy = pd.read_csv(conf.csv_file['train_noisy'])
     train_df = pd.concat([train_curated, train_noisy], sort=True, ignore_index=True)
@@ -189,7 +196,7 @@ def main():
     print(len(x_train), len(x_test))
 
     #logging
-    lr_list = [0.003]
+    lr_list = [0.009]
     batch_size_list = [64]
     for batch_size in batch_size_list:
         for lr in lr_list:
@@ -197,15 +204,6 @@ def main():
             conf.batch_size = batch_size
             comment = f'_batch_size={batch_size}_lr={lr}'
             conf.tb = SummaryWriter(comment=comment)
-            preprocessor = preprocessing.Audio_preprocessor(conf, True)
-            conf.tb.add_audio('audio_sample', preprocessor.read_audio('./data/origin_data/train_curated/7a162942.wav', True))
-            fig, ax = plt.subplots(figsize=(15, 5))
-            ax.set_yscale('linear')
-            ax.set_xscale('linear')
-            ax.imshow(preprocessor.read_as_melspectrogram('./data/origin_data/train_curated/7a162942.wav').reshape(128, 128), cmap="Spectral", interpolation='nearest')
-            print(type(fig))
-            ax.set_aspect('auto')
-            conf.tb.add_figure('spectrogram_sample', figure=fig)
             result = train_model(x_train, y_train, transforms_dict['train'], conf=conf)
             print(result)
     test_preds = predict_model(test_df['fname'], x_test, transforms_dict['test'], conf.num_classes, tta=20)

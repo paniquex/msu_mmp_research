@@ -13,24 +13,11 @@ from psutil import cpu_count
 from model import MainModel
 
 
-def seed_torch(seed=13):
-    """For reproducibility of experiments"""
-
-    random.seed(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)  # if you are using multi-GPU.
-    torch.backends.cudnn.benchmark = True
-    torch.backends.cudnn.deterministic = True
-
-
 class Config:
     def __init__(self, num_classes):
         #debug
         self.seed = 13
-        seed_torch(self.seed)
+        self.seed_torch()
 
         self.debug_mode = True
         # info about data:
@@ -78,3 +65,25 @@ class Config:
         self.samples = self.sampling_rate * self.duration  # elements in one audio file
         self.window_type = 'hann'
 
+        # neural net info
+        self.num_epochs = 80
+        self.batch_size = 64
+        self.test_batch_size = 256
+        self.lr = 9e-3
+        self.eta_min = 1e-5
+        self.t_max = 10
+
+    def seed_torch(self):
+        """For reproducibility of experiments"""
+
+        random.seed(self.seed)
+        os.environ['PYTHONHASHSEED'] = str(self.seed)
+        np.random.seed(self.seed)
+        torch.manual_seed(self.seed)
+        torch.cuda.manual_seed(self.seed)
+        torch.cuda.manual_seed_all(self.seed)  # if you are using multi-GPU.
+        torch.backends.cudnn.benchmark = False
+        torch.backends.cudnn.deterministic = True
+
+    def workers_init_fn(self, worker_id):
+        np.random.seed(self.seed + worker_id)
