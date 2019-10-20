@@ -5,6 +5,9 @@ from torch.utils.data import Dataset
 import random
 from PIL import Image
 
+import preprocessing
+import config
+
 class TrainDataset(Dataset):
     def __init__(self, mels, labels, transforms):
         super().__init__()
@@ -34,6 +37,12 @@ class TestDataset(Dataset):
         super().__init__()
         self.fnames = fnames
         self.mels = mels
+        self.conf = config.Config(80)
+        self.preprocessor = preprocessing.Audio_preprocessor(self.conf, True)
+        if self.mels is None:
+            self.mels = []
+            for fname in fnames:
+                self.mels.append(self.preprocessor.read_as_melspectrogram('./data/origin_data/test/' + fname))
         self.transforms = transforms
         self.tta = tta
 
