@@ -196,17 +196,20 @@ def main():
     print(len(x_train), len(x_test))
 
     #logging
-    lr_list = [0.009]
-    batch_size_list = [64]
-    for batch_size in batch_size_list:
-        for lr in lr_list:
-            conf.lr = lr
-            conf.batch_size = batch_size
-            comment = f'_batch_size={batch_size}_lr={lr}'
-            conf.tb = SummaryWriter(comment=comment)
-            result = train_model(x_train, y_train, transforms_dict['train'], conf=conf)
-            print(result)
-    test_preds = predict_model(test_df['fname'], x_test, transforms_dict['test'], conf.num_classes, tta=20)
+    t_max_list = [conf.t_max]
+    lr_list = [conf.lr]
+    batch_size_list = [conf.batch_size]
+    for t_max in t_max_list:
+        for batch_size in batch_size_list:
+            for lr in lr_list:
+                conf.t_max = t_max
+                conf.batch_size = batch_size
+                conf.lr = lr
+                comment = f'_batch_size={batch_size}_lr={lr}_t_max={t_max}'
+                conf.tb = SummaryWriter(comment=comment)
+                result = train_model(x_train, y_train, transforms_dict['train'], conf=conf)
+                print(result)
+    test_preds = predict_model(test_df['fname'], None, transforms_dict['test'], conf.num_classes, tta=20)
     test_df[labels] = test_preds.values
     test_df.to_csv('submission.csv', index=False)
     test_df.head()
