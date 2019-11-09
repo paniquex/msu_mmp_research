@@ -9,10 +9,16 @@ import preprocessing
 import config
 
 class TrainDataset(Dataset):
-    def __init__(self, mels, labels, transforms):
+    def __init__(self, fnames, mels, labels, transforms):
         super().__init__()
         self.mels = mels
         self.labels = labels
+        self.conf = config.Config(80)
+        self.preprocessor = preprocessing.Audio_preprocessor(self.conf, True)
+        if self.mels is None:
+            self.mels = []
+            for fname in fnames:
+                self.mels.append(self.preprocessor.read_as_melspectrogram('./data/origin_data/train_curated/' + fname))
         self.transforms = transforms
 
     def __len__(self):
@@ -22,6 +28,7 @@ class TrainDataset(Dataset):
         # crop 1sec
         image = Image.fromarray(self.mels[idx], mode='RGB')
         time_dim, base_dim = image.size
+        # print(time_dim, base_dim)
         crop = random.randint(0, time_dim - base_dim)
         image = image.crop([crop, 0, crop + base_dim, base_dim])
         image = self.transforms(image).div_(255)
@@ -54,7 +61,7 @@ class TestDataset(Dataset):
 
         image = Image.fromarray(self.mels[new_idx], mode='RGB')
         time_dim, base_dim = image.size
-        crop = random.randint(0, time_dim - base_dim)
+        crop = random.randint(0, abs(time_dim - base_dim))
         image = image.crop([crop, 0, crop + base_dim, base_dim])
         image = self.transforms(image).div_(255)
 
