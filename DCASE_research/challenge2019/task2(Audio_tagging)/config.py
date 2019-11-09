@@ -19,7 +19,7 @@ class Config:
         self.seed = 13
         self.seed_torch()
 
-        self.debug_mode = True
+        self.debug_mode = False
         # info about data:
         self.dataset_dir = Path('./data/origin_data/')
         self.preprocessed_dir = Path('./data/preprocessed_data/')
@@ -56,20 +56,20 @@ class Config:
 
         self.sampling_rate = 44100
         self.duration = 2  # in seconds
-        self.hop_length = 347 * self.duration  # to make time steps 128
+        self.hop_length = 347 // 128 * 256 * self.duration  # to make time steps 128
         self.fmin = 20  # minimum frequency
         self.fmax = self.sampling_rate // 2  # maximum frequency
-        self.n_mels = 128  # mel coefficients
+        self.n_mels = 256  # mel coefficients
         self.n_fft = self.n_mels * 20  # fft coeffs
         self.padmode = 'constant'  # padding for made
         self.samples = self.sampling_rate * self.duration  # elements in one audio file
         self.window_type = 'hann'
 
         # neural net info
-        self.num_epochs = 80
+        self.num_epochs = 150
         self.batch_size = 64
         self.test_batch_size = 256
-        self.lr = 9e-3
+        self.lr = 3e-3
         self.eta_min = 1e-5
         self.t_max = 10
 
