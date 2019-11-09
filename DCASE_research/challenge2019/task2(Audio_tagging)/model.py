@@ -45,22 +45,30 @@ class SimpleModel(nn.Module):
         super().__init__()
 
         self.conv = nn.Sequential(
-            ConvBlock(in_channels=3, out_channels=16),
-            ConvBlock(in_channels=16, out_channels=32),
-            ConvBlock(in_channels=32, out_channels=64),
+            ConvBlock(in_channels=3, out_channels=64),
             ConvBlock(in_channels=64, out_channels=128),
             ConvBlock(in_channels=128, out_channels=256),
-            ConvBlock(in_channels=256, out_channels=512),
-            ConvBlock(in_channels=512, out_channels=1024),
+            ConvBlock(in_channels=256, out_channels=512)
         )
 
         self.fc = nn.Sequential(
             nn.Dropout(0.2),
-            nn.Linear(1024, 128),
+            nn.Linear(512, 256),
+            nn.PReLU(),
+            nn.BatchNorm1d(256),
+
+            nn.Dropout(0.2),
+            nn.Linear(256, 128),
             nn.PReLU(),
             nn.BatchNorm1d(128),
+
             nn.Dropout(0.1),
-            nn.Linear(128, num_classes),
+            nn.Linear(128, 64),
+            nn.PReLU(),
+            nn.BatchNorm1d(64),
+
+            nn.Dropout(0.1),
+            nn.Linear(64, num_classes),
         )
 
     def forward(self, x):

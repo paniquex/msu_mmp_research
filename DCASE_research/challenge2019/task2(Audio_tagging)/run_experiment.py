@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 import pickle
 import time
 from tqdm import tqdm
-from fastprogress import master_bar, progress_bar
+# from fastprogress import master_bar, progress_bar
 
 
 
@@ -32,7 +32,8 @@ import metrics
 import preprocessing
 
 
-def train_model(x_train, y_train, train_transforms, conf):
+def train_model(fnames, x_train, y_train, train_transforms, conf):
+
     num_epochs = conf.num_epochs
     batch_size = conf.batch_size
     test_batch_size = conf.test_batch_size
@@ -41,11 +42,13 @@ def train_model(x_train, y_train, train_transforms, conf):
     t_max = conf.t_max
 
     num_classes = y_train.shape[1]
+    x_trn, x_val, y_trn, y_val = train_test_split(fnames,
+                                                  y_train,
+                                                  test_size=0.2,
+                                                  random_state=conf.seed)
 
-    x_trn, x_val, y_trn, y_val = train_test_split(x_train, y_train, test_size=0.2, random_state=conf.seed)
-
-    train_dataset = dataset.TrainDataset(x_trn, y_trn, train_transforms)
-    valid_dataset = dataset.TrainDataset(x_val, y_val, train_transforms)
+    train_dataset = dataset.TrainDataset(x_trn, None, y_trn, train_transforms)
+    valid_dataset = dataset.TrainDataset(x_val, None, y_val, train_transforms)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
                               pin_memory=True,
@@ -160,7 +163,7 @@ def main():
     conf.seed_torch()
     train_curated = pd.read_csv(conf.csv_file['train_curated'])
     train_noisy = pd.read_csv(conf.csv_file['train_noisy'])
-    train_df = pd.concat([train_curated, train_noisy], sort=True, ignore_index=True)
+    train_df = pd.concat([train_curated], sort=True, ignore_index=True)
 
     test_df = pd.read_csv(conf.csv_file['sample_submission'])
     print('CSV files loading was done.')
@@ -207,7 +210,7 @@ def main():
                 conf.lr = lr
                 comment = f'_batch_size={batch_size}_lr={lr}_t_max={t_max}'
                 conf.tb = SummaryWriter(comment=comment)
-                result = train_model(x_train, y_train, transforms_dict['train'], conf=conf)
+                result = train_model(train_df['fname'], None, y_train, transforms_dict['train'], conf=conf)
                 print(result)
     test_preds = predict_model(test_df['fname'], None, transforms_dict['test'], conf.num_classes, tta=20)
     test_df[labels] = test_preds.values
