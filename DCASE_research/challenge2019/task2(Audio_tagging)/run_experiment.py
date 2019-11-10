@@ -64,8 +64,9 @@ def train_model(fnames, x_train, y_train, train_transforms, conf):
     net = model.MainModel(model_type='Simple', num_classes=num_classes)
     net = net.model.cuda()
     criterion = nn.BCEWithLogitsLoss().cuda()
-    optimizer = optim.Adam(params=net.parameters(), lr=lr, amsgrad=False)
-    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=t_max, eta_min=eta_min)
+    optimizer = optim.Adam(params=net.parameters(), lr=lr, amsgrad=True)
+    # scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=t_max, eta_min=eta_min)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=t_max)
 
     best_epoch = -1
     best_lwlrap = 0.
@@ -109,7 +110,7 @@ def train_model(fnames, x_train, y_train, train_transforms, conf):
         score, weight = metrics.calculate_per_class_lwlrap(y_val, valid_preds)
         lwlrap = (score * weight).sum()
 
-        scheduler.step()
+        scheduler.step(avg_val_loss)
         if (epoch + 1) % 5 == 0:
             elapsed = time.time() - start_time
             print(
@@ -188,10 +189,12 @@ def main():
     # augmentations
     transforms_dict = {
         'train': transforms.Compose([
+            transforms.RandomCrop(128),
             transforms.RandomHorizontalFlip(0.5),
             transforms.ToTensor(),
         ]),
         'test': transforms.Compose([
+            transforms.RandomCrop(128),
             transforms.RandomHorizontalFlip(0.5),
             transforms.ToTensor(),
         ]),
@@ -202,23 +205,24 @@ def main():
     t_max_list = [conf.t_max]
     lr_list = [conf.lr]
     batch_size_list = [conf.batch_size]
+    epoch_amount_list = [conf.num_epochs]
     for t_max in t_max_list:
         for batch_size in batch_size_list:
             for lr in lr_list:
-                conf.t_max = t_max
-                conf.batch_size = batch_size
-                conf.lr = lr
-                comment = f'_batch_size={batch_size}_lr={lr}_t_max={t_max}'
-                conf.tb = SummaryWriter(comment=comment)
-                result = train_model(train_df['fname'], None, y_train, transforms_dict['train'], conf=conf)
-                print(result)
+                for epoch in epoch_amount_list:
+                    conf.t_max = t_max
+                    conf.batch_size = batch_size
+                    conf.lr = lr
+                    conf.num_epochs = epoch
+                    comment = f'_batch_size={batch_size}_lr={lr}_t_max={t_max}_epoches={epoch}_scheduler=REDUCEONPLATEAU_05'
+                    conf.tb = SummaryWriter(comment=comment)
+                    result = train_model(train_df['fname'], None, y_train, transforms_dict['train'], conf=conf)
+                    print(result)
     test_preds = predict_model(test_df['fname'], None, transforms_dict['test'], conf.num_classes, tta=20)
     test_df[labels] = test_preds.values
     test_df.to_csv('submission.csv', index=False)
     test_df.head()
 
+
 if __name__ == '__main__':
     main()
-
-
-
