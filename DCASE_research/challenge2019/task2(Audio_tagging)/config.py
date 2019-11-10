@@ -56,22 +56,22 @@ class Config:
 
         self.sampling_rate = 44100
         self.duration = 2  # in seconds
-        self.hop_length = 347 // 128 * 256 * self.duration  # to make time steps 128
+        self.n_mels = 128  # mel coefficients
+        self.hop_length = 347 // 128 * self.n_mels * self.duration  # to make time steps 128
         self.fmin = 20  # minimum frequency
         self.fmax = self.sampling_rate // 2  # maximum frequency
-        self.n_mels = 256  # mel coefficients
         self.n_fft = self.n_mels * 20  # fft coeffs
         self.padmode = 'constant'  # padding for made
         self.samples = self.sampling_rate * self.duration  # elements in one audio file
         self.window_type = 'hann'
 
         # neural net info
-        self.num_epochs = 150
+        self.num_epochs = 100
         self.batch_size = 64
         self.test_batch_size = 256
-        self.lr = 3e-3
+        self.lr = 1e-2
         self.eta_min = 1e-5
-        self.t_max = 10
+        self.t_max = 20
 
     def seed_torch(self):
         """For reproducibility of experiments"""
