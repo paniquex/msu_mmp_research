@@ -65,8 +65,8 @@ def train_model(fnames, x_train, y_train, train_transforms, conf):
     net = net.model.cuda()
     criterion = nn.BCEWithLogitsLoss().cuda()
     optimizer = optim.Adam(params=net.parameters(), lr=lr, amsgrad=True)
-    # scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=t_max, eta_min=eta_min)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=t_max)
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=t_max, eta_min=eta_min)
+    # scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=0.5, patience=t_max)
 
     best_epoch = -1
     best_lwlrap = 0.
@@ -110,7 +110,8 @@ def train_model(fnames, x_train, y_train, train_transforms, conf):
         score, weight = metrics.calculate_per_class_lwlrap(y_val, valid_preds)
         lwlrap = (score * weight).sum()
 
-        scheduler.step(avg_val_loss)
+        scheduler.step()
+        # scheduler.step(avg_val_loss)
         if (epoch + 1) % 5 == 0:
             elapsed = time.time() - start_time
             print(
@@ -214,7 +215,7 @@ def main():
                     conf.batch_size = batch_size
                     conf.lr = lr
                     conf.num_epochs = epoch
-                    comment = f'_batch_size={batch_size}_lr={lr}_t_max={t_max}_epoches={epoch}_scheduler=REDUCEONPLATEAU_05'
+                    comment = f'_batch_size={batch_size}_lr={lr}_t_max={t_max}_epoches={epoch}_scheduler=COSINE_preproc={conf.preprocessing_type}'
                     conf.tb = SummaryWriter(comment=comment)
                     result = train_model(train_df['fname'], None, y_train, transforms_dict['train'], conf=conf)
                     print(result)
