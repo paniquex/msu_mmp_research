@@ -1,5 +1,5 @@
 # Scientific researches
-Здесь я буду писать о моих продвижениях в теме "Speech recognition".
+Здесь я буду писать о моих продвижениях в темах "Speech recognition, Audio processing...".
 Ссылка на [гугл-таблицу](https://docs.google.com/spreadsheets/d/1rFv8BecwJ_TwTR5gNuPmNbKJjQrw-FQ7MnWDofIi3zQ/edit?usp=sharing) с описанием статей.
 Она состоит из двух страниц:
 1) Выписывал все, что понравилось с таймлайном и кратким обзором
@@ -25,4 +25,6 @@ VoiceFilter: Targeted Voice Separation by Speaker-Conditioned Spectrogram Maskin
       2) Поучаствовать в соревновании - https://www.kaggle.com/c/freesound-audio-tagging-2019/overview/submission-modes
       3) сделать краткий обзор статей за 01/07/19
 
-## 19/10/19 - Обновил [табличку](https://docs.google.com/spreadsheets/d/1rFv8BecwJ_TwTR5gNuPmNbKJjQrw-FQ7MnWDofIi3zQ/edit?usp=sharing) 
+## 19/10/19 - Обновил [табличку](https://docs.google.com/spreadsheets/d/1rFv8BecwJ_TwTR5gNuPmNbKJjQrw-FQ7MnWDofIi3zQ/edit?usp=sharing)
+
+## 12/11/19 - Обновил [табличку](https://docs.google.com/spreadsheets/d/1rFv8BecwJ_TwTR5gNuPmNbKJjQrw-FQ7MnWDofIi3zQ/edit?usp=sharing)
