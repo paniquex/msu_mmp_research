@@ -1,4 +1,4 @@
-# ATTENTION! Since 1st of March, 2020 all subsequent reasearch have been moved to private repository and private google docs, because my research depends on ongoing competition DCASE 2020.
+# ATTENTION! Since 1st of March, 2020 all subsequent reasearch have been moved to private repository and private google docs, because my research depends on ongoing competition [DCASE 2020](http://dcase.community).
 
 # Scientific researches
 Здесь я буду писать о моих продвижениях в темах "Speech recognition, Audio processing...".
