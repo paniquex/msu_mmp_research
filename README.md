@@ -1,3 +1,5 @@
+# ATTENTION! Since 1st of March, 2020 all subsequent reasearch have been moved to private repository and private google docs, because my research depends on ongoing competition DCASE 2020.
+
 # Scientific researches
 Здесь я буду писать о моих продвижениях в темах "Speech recognition, Audio processing...".
 Ссылка на [гугл-таблицу](https://docs.google.com/spreadsheets/d/1rFv8BecwJ_TwTR5gNuPmNbKJjQrw-FQ7MnWDofIi3zQ/edit?usp=sharing) с описанием статей.
